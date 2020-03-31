@@ -9,6 +9,7 @@ from bs4 import BeautifulSoup
 from datetime import datetime
 from sshtunnel import SSHTunnelForwarder
 import wechat_public_login
+import auto_mail
 import logging
 import log_config
 logger = log_config.log('scrapy')
@@ -77,9 +78,9 @@ def cookies_verify():
     except:
         logger.info("cookie已失效")
         renew_flag=1
-        for i in range(5):
+        for i in range(5):  #重试5次
             renew_flag = wechat_public_login.renew()
-            logger.info(renew_flag)
+          #  logger.info(renew_flag)
             if renew_flag==0:
                 cookies=read_cookies()
                 response = requests.get(url=url, cookies=cookies)
@@ -87,9 +88,12 @@ def cookies_verify():
                 return(token,cookies,header)
                 break
             else: 
+                time.sleep(600)
                 continue
+            
         if renew_flag!=0:
             logger.info("登录错误，退出程序")
+            
             return (1,1,1)
             
 def main_run():        
@@ -177,15 +181,19 @@ def main_run():
             time.sleep(sleeptime)   #公众号直接的等待时间
         connection.close()
         server.stop()
+        return 0
     except Exception as e:
         logger.info('%s'%e)
         connection.close()
         server.stop()
+        return 1
 
 while 1:
-    if (main_run()==1):
+    logger.info("开始爬取公众号")
+    if (main_run()!=0):
         logger.info("程序异常退出")
         
         break
     time.sleep(sleeptime)
+auto_mail.AlertMsg("公众号程序异常","尝试登录次数过多，需要重启程序")
 sys.exit()

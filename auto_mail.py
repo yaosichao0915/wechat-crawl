@@ -3,12 +3,8 @@ from email.mime.text import MIMEText
 from email.header import Header
 from email.mime.multipart import MIMEMultipart
 from email.mime.image import MIMEImage
-def auto_mail():
-    msg_from = ''  # 发送方邮箱
-    passwd = ''  # 填入发送方邮箱的授权码(填入自己的授权码，相当于邮箱密码)
-    msg_to = ['']  # 收件人邮箱
-    # msg_to = '616564099@qq.com'  # 收件人邮箱
 
+def QRscan():
     subject = "微信公众号需要登录"  # 主题
     # *************发送html的邮件**********
     msg = MIMEMultipart()
@@ -30,8 +26,17 @@ def auto_mail():
 
     # 放入邮件主题
     msg['Subject'] = subject
-    # 也可以这样传参
-    # msg['Subject'] = Header(subject, 'utf-8')
+    auto_mail(msg)
+    
+def AlertMsg(subject,text):
+    msg = MIMEText(text, 'plain', 'utf-8')
+    msg['Subject'] = subject
+    auto_mail(msg)
+    
+def auto_mail(msg):
+    msg_from = 'sichao.yao@tgene.com.cn'  # 发送方邮箱
+    passwd = ''  # 填入发送方邮箱的授权码(填入自己的授权码，相当于邮箱密码)
+    msg_to = ['sichao.yao@tgene.com.cn']  # 收件人邮箱
     # 放入发件人
     msg['From'] = msg_from
 
@@ -47,3 +52,4 @@ def auto_mail():
         print(e)
     finally:
         s.quit()
+#AlertMsg("test","quit")

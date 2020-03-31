@@ -41,11 +41,11 @@ def renew():
                 time.sleep(5)
                 logger.info("获取二维码成功")
                 driver.get_screenshot_as_file("QR.png")
-                auto_mail.auto_mail()
+                auto_mail.QRscan()
             except:
                 logger.info("切换二维码失败，可能已经是二维码状态")
                 driver.get_screenshot_as_file("QR.png")
-                auto_mail.auto_mail()
+                auto_mail.QRscan()
         time.sleep(150)
         try:
             token = re.findall(r'token=(\d+)', str(driver.current_url))[0]
